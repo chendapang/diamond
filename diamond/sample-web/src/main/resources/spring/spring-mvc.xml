@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-4.2.xsd   
+           http://www.springframework.org/schema/context   
+           http://www.springframework.org/schema/context/spring-context-4.2.xsd
+           http://www.springframework.org/schema/mvc   
+           http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+           http://www.springframework.org/schema/aop
+   		   http://www.springframework.org/schema/aop/spring-aop-4.2.xsd">
+	<!-- 返回数据json配置 start -->
+	<bean
+		class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+		<!-- objectMapper配置 -->
+		<property name="objectMapper">
+			<bean class="com.fisher.objMapper.MyObjectMapper" />
+			<!-- <bean class="com.fasterxml.jackson.databind.ObjectMapper"> -->
+			<!-- 驼峰命名法转换为小写加下划线 -->
+			<!-- <property name="propertyNamingStrategy"> -->
+			<!-- <bean class="com.fasterxml.jackson.databind.PropertyNamingStrategy.LowerCaseWithUnderscoresStrategy" 
+				/> -->
+			<!-- </property> -->
+			<!-- 为null字段时不输出 -->
+			<!-- <property name="serializationInclusion"> -->
+			<!-- <value type="com.fasterxml.jackson.annotation.JsonInclude.Include">NON_NULL</value> -->
+			<!-- </property> -->
+			<!-- 禁用空对象转换json校验 -->
+			<!-- <property name="configure"> -->
+			<!-- <value type="com.fasterxml.jackson.databind.SerializationFeature">FAIL_ON_EMPTY_BEANS</value> -->
+			<!-- </property> -->
+			<!-- 忽略未知的字段 -->
+			<!-- <property name="configure"> -->
+			<!-- <value type="com.fasterxml.jackson.databind.DeserializationFeature">FAIL_ON_UNKNOWN_PROPERTIES</value> -->
+			<!-- </property> -->
+			<!-- </bean> -->
+		</property>
+		<!-- 支持的类型，编码 -->
+		<property name="supportedMediaTypes">
+			<list>
+				<value>application/json;charset=UTF-8</value>
+			</list>
+		</property>
+	</bean>
+	<mvc:annotation-driven />
+	<!-- 返回数据json配置 end -->
+
+	<!-- 扫描激活所有注解-->
+	<context:component-scan base-package="com.fisher.controller" />
+
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.support.StandardServletMultipartResolver">
+	</bean>
+
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix">
+			<value>/WEB-INF/</value>
+		</property>
+		<property name="suffix">
+			<value>.jsp</value>
+		</property>
+	</bean>
+
+
+</beans>

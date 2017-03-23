@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ujia.dao.ActivityMapper">
+	<resultMap id="BaseResultMap" type="com.ujia.model.Activity">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="title" property="title" jdbcType="VARCHAR" />
+		<result column="thumb" property="thumb" jdbcType="VARCHAR" />
+		<result column="href" property="href" jdbcType="VARCHAR" />
+		<result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+		<result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+		<result column="boutique" property="boutique" jdbcType="BIT" />
+		<result column="digest" property="digest" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, title, thumb, href, start_time, end_time, boutique,
+		digest
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from ujia_activity
+		where id = #{id,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from
+		ujia_activity
+		where id = #{id,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="com.ujia.model.Activity">
+		insert into ujia_activity (id,
+		title, thumb,
+		href, start_time, end_time,
+		boutique, digest)
+		values
+		(#{id,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR},
+		#{thumb,jdbcType=VARCHAR},
+		#{href,jdbcType=VARCHAR},
+		#{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP},
+		#{boutique,jdbcType=BIT}, #{digest,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective" parameterType="com.ujia.model.Activity">
+		insert into ujia_activity
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="title != null">
+				title,
+			</if>
+			<if test="thumb != null">
+				thumb,
+			</if>
+			<if test="href != null">
+				href,
+			</if>
+			<if test="startTime != null">
+				start_time,
+			</if>
+			<if test="endTime != null">
+				end_time,
+			</if>
+			<if test="boutique != null">
+				boutique,
+			</if>
+			<if test="digest != null">
+				digest,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="title != null">
+				#{title,jdbcType=VARCHAR},
+			</if>
+			<if test="thumb != null">
+				#{thumb,jdbcType=VARCHAR},
+			</if>
+			<if test="href != null">
+				#{href,jdbcType=VARCHAR},
+			</if>
+			<if test="startTime != null">
+				#{startTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="endTime != null">
+				#{endTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="boutique != null">
+				#{boutique,jdbcType=BIT},
+			</if>
+			<if test="digest != null">
+				#{digest,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.ujia.model.Activity">
+		update ujia_activity
+		<set>
+			<if test="title != null">
+				title = #{title,jdbcType=VARCHAR},
+			</if>
+			<if test="thumb != null">
+				thumb = #{thumb,jdbcType=VARCHAR},
+			</if>
+			<if test="href != null">
+				href = #{href,jdbcType=VARCHAR},
+			</if>
+			<if test="startTime != null">
+				start_time = #{startTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="endTime != null">
+				end_time = #{endTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="boutique != null">
+				boutique = #{boutique,jdbcType=BIT},
+			</if>
+			<if test="digest != null">
+				digest = #{digest,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.ujia.model.Activity">
+		update
+		ujia_activity
+		set title = #{title,jdbcType=VARCHAR},
+		thumb =
+		#{thumb,jdbcType=VARCHAR},
+		href = #{href,jdbcType=VARCHAR},
+		start_time =
+		#{startTime,jdbcType=TIMESTAMP},
+		end_time =
+		#{endTime,jdbcType=TIMESTAMP},
+		boutique = #{boutique,jdbcType=BIT},
+		digest = #{digest,jdbcType=VARCHAR}
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+
+	<!-- autoend -->
+
+	<!-- 获取最新活动 -->
+	<sql id="getActivityCondition">
+		<where>
+			<if test="status == 'newest'">
+				NOW() > start_time
+				AND end_time > NOW()
+			</if>
+			<if test="status == 'boutique'">
+				NOW() > start_time
+				AND end_time > NOW()
+				and boutique = true
+			</if>
+			<if test="status == 'to_start'">
+				start_time > NOW()
+			</if>
+			<if test="status == 'finish'">
+				NOW() > end_time
+			</if>
+		</where>
+	</sql>
+	<select id="getActivityCount" resultType="int" parameterType="map">
+		select
+		count(*)
+		from ujia_activity
+		<include refid="getActivityCondition"></include>
+	</select>
+	<select id="getActivityList" resultMap="BaseResultMap"
+		parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from ujia_activity
+		<include refid="getActivityCondition"></include>
+		ORDER BY start_time desc
+		<include refid="com.fisher.mybatis.SqlMapper.pageSQL"></include>
+	</select>
+	<!-- 获取最新活动 end -->
+
+
+
+</mapper>

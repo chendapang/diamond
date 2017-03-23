@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ujia.dao.WxSceneQrcodeMapper" >
+  <resultMap id="BaseResultMap" type="com.ujia.model.WxSceneQrcode" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="reply_type" property="replyType" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="ticket" property="ticket" jdbcType="VARCHAR" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, name, reply_type, content, ticket, url, create_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from ujia_wx_scene_qrcode
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ujia_wx_scene_qrcode
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.ujia.model.WxSceneQrcode" >
+    insert into ujia_wx_scene_qrcode (id, name, reply_type, 
+      content, ticket, url, 
+      create_time)
+    values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{replyType,jdbcType=VARCHAR}, 
+      #{content,jdbcType=VARCHAR}, #{ticket,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ujia.model.WxSceneQrcode" >
+    insert into ujia_wx_scene_qrcode
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="replyType != null" >
+        reply_type,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="ticket != null" >
+        ticket,
+      </if>
+      <if test="url != null" >
+        url,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="replyType != null" >
+        #{replyType,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="ticket != null" >
+        #{ticket,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ujia.model.WxSceneQrcode" >
+    update ujia_wx_scene_qrcode
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="replyType != null" >
+        reply_type = #{replyType,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="ticket != null" >
+        ticket = #{ticket,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ujia.model.WxSceneQrcode" >
+    update ujia_wx_scene_qrcode
+    set name = #{name,jdbcType=VARCHAR},
+      reply_type = #{replyType,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      ticket = #{ticket,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+<!--   autoend -->
+
+
+<!-- 获取场景二维码列表 -->
+	<sql id="getWxSceneQrcodeCondition">
+		<where>
+		</where>
+	</sql>
+	<select id="getWxSceneQrcodeCount" resultType="int" parameterType="map">
+		select
+		count(*)
+		from ujia_wx_scene_qrcode
+		<include refid="getWxSceneQrcodeCondition"></include>
+	</select>
+	<select id="getWxSceneQrcodeList" resultMap="BaseResultMap"
+		parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from ujia_wx_scene_qrcode
+		<include refid="getWxSceneQrcodeCondition"></include>
+		ORDER BY create_time desc
+		<include refid="com.fisher.mybatis.SqlMapper.pageSQL"></include>
+	</select>
+	<!-- 获取场景二维码列表 -->
+</mapper>

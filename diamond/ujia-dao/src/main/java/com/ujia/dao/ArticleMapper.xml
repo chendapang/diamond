@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ujia.dao.ArticleMapper">
+
+	<sql id="Base_Column_List">
+		id, cover, title, created_at, tags, updated_at, article_type,
+		article_type_key, author_name,
+		author_avatar, article_abstract, media_url,page_content,top_cover
+	</sql>
+
+	<resultMap id="BaseResultMap" type="com.ujia.vo.ArticleVo">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="cover" property="cover" jdbcType="VARCHAR" />
+		<result column="title" property="title" jdbcType="VARCHAR" />
+		<result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+		<result column="tags" property="tags" jdbcType="VARCHAR" />
+		<result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+		<result column="article_type" property="articleType" jdbcType="VARCHAR" />
+		<result column="article_type_key" property="articleTypeKey" jdbcType="INTEGER" />
+		<result column="author_name" property="authorName" jdbcType="VARCHAR" />
+		<result column="author_avatar" property="authorAvatar" jdbcType="VARCHAR" />
+		<result column="article_abstract" property="articleAbstract" jdbcType="VARCHAR" />
+		<result column="media_url" property="mediaUrl" jdbcType="VARCHAR" />
+		<result column="page_content" property="pageContent" jdbcType="LONGVARCHAR" />
+		<result column="top_cover" property="topCover" jdbcType="VARCHAR" />
+		
+	</resultMap>
+	<resultMap id="articleMap" type="com.ujia.vo.ArticleVo">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="COVER" property="cover" jdbcType="VARCHAR" />
+		<result column="TITLE" property="title" jdbcType="VARCHAR" />
+		<result column="CREATED_AT" property="createdAt" jdbcType="TIMESTAMP" />
+		<result column="TAGS" property="tags" jdbcType="VARCHAR" />
+		<result column="PAGE_CONTENT" property="pageContent" jdbcType="VARCHAR" />
+		<result column="UPDATED_AT" property="updatedAt" jdbcType="TIMESTAMP" />
+		<result column="ARTICLE_TYPE" property="articleType" jdbcType="VARCHAR" />
+		<result column="ARTICLE_TYPE_KEY" property="articleTypeKey" jdbcType="INTEGER" />
+		<result column="AUTHOR_NAME" property="authorName" jdbcType="VARCHAR" />
+		<result column="AUTHOR_AVATAR" property="authorAvatar" jdbcType="VARCHAR" />
+		<result column="ARTICLE_ABSTRACT" property="articleAbstract" jdbcType="VARCHAR" />
+		<result column="MEDIA_URL" property="mediaUrl" jdbcType="VARCHAR" />
+		<result column="top_cover" property="topCover" jdbcType="VARCHAR" />
+	</resultMap>
+
+
+	<select id="countArticle" resultType="int" parameterType="Map">
+		select
+		count(T1.ID)
+		from ujia_article T1
+		<where>
+
+
+
+			<if test="searchParam != null and '' !=searchParam">
+
+				AND INSTR(T1.tags,#{searchParam})>0 OR
+				INSTR(T1.title,#{searchParam})>0
+			</if>
+			<if test="articleTypeKey != null">
+
+				AND T1.article_type_key=#{articleTypeKey}
+			</if>
+
+		</where>
+	</select>
+
+	<select id="getArticles" resultMap="articleMap" parameterType="Map">
+		select
+		T1.id,
+		T1.cover,
+		T1.title,
+		T1.tags,
+		T1.author_name,
+		T1.author_avatar,
+		T1.article_abstract,
+		T1.article_type,
+		T1.top_cover
+
+		from
+		ujia_article
+		T1
+		<where>
+
+
+			<if test="searchParam != null and '' !=searchParam">
+
+				AND INSTR(T1.tags,#{searchParam})>0 OR
+				INSTR(T1.title,#{searchParam})>0
+			</if>
+			<if test="articleTypeKey != null">
+
+				AND T1.article_type_key=#{articleTypeKey}
+			</if>
+		</where>
+		order by T1.CREATED_AT desc
+		<include refid="com.fisher.mybatis.SqlMapper.pageSQL"></include>
+	</select>
+
+	<select id="getArticle" resultMap="articleMap" parameterType="Map">
+		select
+		T1.id,
+		T1.cover,
+		T1.title,
+		T1.tags,
+		T1.author_name,
+		T1.author_avatar,
+		T1.page_content,
+		T1.MEDIA_URL,
+		T1.top_cover
+		from ujia_article
+		T1
+		<where>
+
+			T1.id=#{id}
+		</where>
+
+	</select>
+
+	<select id="getArticlesLimit" resultMap="articleMap"
+		parameterType="Map">
+		select
+		T1.id,
+		T1.cover,
+		T1.title,
+		T1.tags,
+		T1.top_cover
+		from
+		ujia_article
+		T1
+
+		<where>
+			T1.article_type_key=#{articleTypeKey}
+		</where>
+
+		limit #{limit}
+
+	</select>
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from ujia_article
+		where id = #{id,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from
+		ujia_article
+		where id = #{id,jdbcType=VARCHAR}
+	</delete>
+	<update id="updateByPrimaryKeySelective" parameterType="com.ujia.model.Article">
+		update ujia_article
+		<set>
+			<if test="cover != null">
+				cover = #{cover,jdbcType=VARCHAR},
+			</if>
+			<if test="title != null">
+				title = #{title,jdbcType=VARCHAR},
+			</if>
+			<if test="createdAt != null">
+				created_at = #{createdAt,jdbcType=TIMESTAMP},
+			</if>
+			<if test="tags != null">
+				tags = #{tags,jdbcType=VARCHAR},
+			</if>
+			<if test="updatedAt != null">
+				updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+			</if>
+			<if test="articleType != null">
+				article_type = #{articleType,jdbcType=VARCHAR},
+			</if>
+			<if test="articleTypeKey != null">
+				article_type_key = #{articleTypeKey,jdbcType=INTEGER},
+			</if>
+			<if test="authorName != null">
+				author_name = #{authorName,jdbcType=VARCHAR},
+			</if>
+			<if test="authorAvatar != null">
+				author_avatar = #{authorAvatar,jdbcType=VARCHAR},
+			</if>
+			<if test="articleAbstract != null">
+				article_abstract = #{articleAbstract,jdbcType=VARCHAR},
+			</if>
+			<if test="mediaUrl != null">
+				media_url = #{mediaUrl,jdbcType=VARCHAR},
+			</if>
+			<if test="pageContent != null">
+				page_content = #{pageContent,jdbcType=LONGVARCHAR},
+			</if>
+			<if test="topCover != null">
+				top_cover = #{topCover,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+
+	<insert id="insertSelective" parameterType="com.ujia.model.Article">
+		insert into ujia_article
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="cover != null">
+				cover,
+			</if>
+			<if test="title != null">
+				title,
+			</if>
+				created_at,
+			
+			<if test="tags != null">
+				tags,
+			</if>
+			<if test="updatedAt != null">
+				updated_at,
+			</if>
+			<if test="articleType != null">
+				article_type,
+			</if>
+			<if test="articleTypeKey != null">
+				article_type_key,
+			</if>
+			<if test="authorName != null">
+				author_name,
+			</if>
+			<if test="authorAvatar != null">
+				author_avatar,
+			</if>
+			<if test="articleAbstract != null">
+				article_abstract,
+			</if>
+			<if test="mediaUrl != null">
+				media_url,
+			</if>
+			<if test="pageContent != null">
+				page_content,
+			</if>
+			<if test="topCover != null">
+				top_cover,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="cover != null">
+				#{cover,jdbcType=VARCHAR},
+			</if>
+			<if test="title != null">
+				#{title,jdbcType=VARCHAR},
+			</if>
+			
+				now(),
+			
+			<if test="tags != null">
+				#{tags,jdbcType=VARCHAR},
+			</if>
+			<if test="updatedAt != null">
+				#{updatedAt,jdbcType=TIMESTAMP},
+			</if>
+			<if test="articleType != null">
+				#{articleType,jdbcType=VARCHAR},
+			</if>
+			<if test="articleTypeKey != null">
+				#{articleTypeKey,jdbcType=INTEGER},
+			</if>
+			<if test="authorName != null">
+				#{authorName,jdbcType=VARCHAR},
+			</if>
+			<if test="authorAvatar != null">
+				#{authorAvatar,jdbcType=VARCHAR},
+			</if>
+			<if test="articleAbstract != null">
+				#{articleAbstract,jdbcType=VARCHAR},
+			</if>
+			<if test="mediaUrl != null">
+				#{mediaUrl,jdbcType=VARCHAR},
+			</if>
+			<if test="pageContent != null">
+				#{pageContent,jdbcType=LONGVARCHAR},
+			</if>
+			<if test="topCover != null">
+				#{topCover,jdbcType=VARCHAR},
+			</if>
+			
+		</trim>
+	</insert>
+</mapper>

@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ujia.dao.OrderMapper">
+	<resultMap id="BaseResultMap" type="com.ujia.model.Order">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="CONTACT" property="contact" jdbcType="VARCHAR" />
+		<result column="BUILDING" property="building" jdbcType="VARCHAR" />
+		<result column="CREATED_AT" property="createdAt" jdbcType="TIMESTAMP" />
+		<result column="TYPE" property="type" jdbcType="INTEGER" />
+		<result column="DESIGNER_NAME" property="designerName"
+			jdbcType="VARCHAR" />
+		<result column="STATUS" property="status" jdbcType="INTEGER" />
+		<result column="COMMENT" property="comment" jdbcType="VARCHAR" />
+		<result column="STATUS_STR" property="statusStr" jdbcType="VARCHAR" />
+		<result column="TYPE_STR" property="typeStr" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="ResultMapWithBLOBs" type="com.ujia.vo.OrderVo"
+		extends="BaseResultMap">
+		<result column="META_DATA" property="metaData" jdbcType="LONGVARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		ID, CONTACT, BUILDING, CREATED_AT, TYPE, DESIGNER_NAME, STATUS, COMMENT,STATUS_STR,TYPE_STR
+	</sql>
+	<sql id="Blob_Column_List">
+		META_DATA
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		,
+		<include refid="Blob_Column_List" />
+		from ujia_order
+		where ID = #{id,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from ujia_order
+		where ID = #{id,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="com.ujia.model.Order">
+		insert into ujia_order (ID, CONTACT, BUILDING,
+		CREATED_AT, TYPE, DESIGNER_NAME,
+		STATUS, COMMENT, META_DATA,TYPE_STR,STATUS_STR
+		)
+		values (#{id,jdbcType=VARCHAR}, #{contact,jdbcType=VARCHAR},
+		#{building,jdbcType=VARCHAR},
+		now(), #{type,jdbcType=INTEGER}, #{designerName,jdbcType=VARCHAR},
+		#{status,jdbcType=INTEGER}, #{comment,jdbcType=VARCHAR},
+		#{metaData,jdbcType=LONGVARCHAR},#{typeStr,jdbcType=VARCHAR},
+		#{statusStr,jdbcType=VARCHAR}
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="com.ujia.model.Order">
+		insert into ujia_order
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				ID,
+			</if>
+			<if test="contact != null">
+				CONTACT,
+			</if>
+			<if test="building != null">
+				BUILDING,
+			</if>
+			<if test="createdAt != null">
+				CREATED_AT,
+			</if>
+			<if test="type != null">
+				TYPE,
+			</if>
+			<if test="designerName != null">
+				DESIGNER_NAME,
+			</if>
+			<if test="status != null">
+				STATUS,
+			</if>
+			<if test="comment != null">
+				COMMENT,
+			</if>
+			<if test="metaData != null">
+				META_DATA,
+			</if>
+			<if test="typeStr != null">
+				TYPE_STR,
+			</if>
+			<if test="statusStr != null">
+				STATUS_STR,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="contact != null">
+				#{contact,jdbcType=VARCHAR},
+			</if>
+			<if test="building != null">
+				#{building,jdbcType=VARCHAR},
+			</if>
+			<if test="createdAt != null">
+				#{createdAt,jdbcType=TIMESTAMP},
+			</if>
+			<if test="type != null">
+				#{type,jdbcType=INTEGER},
+			</if>
+			<if test="designerName != null">
+				#{designerName,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=INTEGER},
+			</if>
+			<if test="comment != null">
+				#{comment,jdbcType=VARCHAR},
+			</if>
+			<if test="metaData != null">
+				#{metaData,jdbcType=LONGVARCHAR},
+			</if>
+			<if test="typeStr != null">
+				#{typeStr,jdbcType=VARCHAR},
+			</if>
+			<if test="statusStr != null">
+				#{statusStr,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.ujia.model.Order">
+		update ujia_order
+		<set>
+			<if test="contact != null">
+				CONTACT = #{contact,jdbcType=VARCHAR},
+			</if>
+			<if test="building != null">
+				BUILDING = #{building,jdbcType=VARCHAR},
+			</if>
+			<if test="createdAt != null">
+				CREATED_AT = #{createdAt,jdbcType=TIMESTAMP},
+			</if>
+			<if test="type != null">
+				TYPE = #{type,jdbcType=INTEGER},
+			</if>
+			<if test="designerName != null">
+				DESIGNER_NAME = #{designerName,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				STATUS = #{status,jdbcType=INTEGER},
+			</if>
+			<if test="comment != null">
+				COMMENT = #{comment,jdbcType=VARCHAR},
+			</if>
+			<if test="metaData != null">
+				META_DATA = #{metaData,jdbcType=LONGVARCHAR},
+			</if>
+			<if test="statusStr != null">
+				status_str = #{statusStr,jdbcType=INTEGER},
+			</if>
+		</set>
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKeyWithBLOBs" parameterType="com.ujia.model.Order">
+		update ujia_order
+		set CONTACT = #{contact,jdbcType=VARCHAR},
+		BUILDING = #{building,jdbcType=VARCHAR},
+		CREATED_AT = #{createdAt,jdbcType=TIMESTAMP},
+		TYPE = #{type,jdbcType=INTEGER},
+		DESIGNER_NAME = #{designerName,jdbcType=VARCHAR},
+		STATUS = #{status,jdbcType=INTEGER},
+		COMMENT = #{comment,jdbcType=VARCHAR},
+		META_DATA = #{metaData,jdbcType=LONGVARCHAR}
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.ujia.model.Order">
+		update ujia_order
+		set CONTACT = #{contact,jdbcType=VARCHAR},
+		BUILDING = #{building,jdbcType=VARCHAR},
+		CREATED_AT = #{createdAt,jdbcType=TIMESTAMP},
+		TYPE = #{type,jdbcType=INTEGER},
+		DESIGNER_NAME = #{designerName,jdbcType=VARCHAR},
+		STATUS = #{status,jdbcType=INTEGER},
+		COMMENT = #{comment,jdbcType=VARCHAR}
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+
+	<select id="orderAccount" resultType="int">
+		select
+		count(T1.ID)
+		from
+		ujia_order T1 
+		<where>
+			<if test="contact != null">
+				AND contact = #{contact,jdbcType=VARCHAR}
+			</if>
+			<if test="type != null">
+				AND type = #{type,jdbcType=INTEGER}
+			</if>
+		</where>
+
+	</select>
+	
+	<select id="getOrders" resultMap="BaseResultMap" parameterType="Map">
+		select
+		<include refid="Base_Column_List" />
+		from ujia_order
+		<where>
+			<if test="contact != null and ''!=contact">
+				AND contact = #{contact,jdbcType=VARCHAR}
+			</if>
+			<if test="type != null">
+				AND type = #{type,jdbcType=INTEGER}
+			</if>
+		</where>
+		order by CREATED_AT desc
+		<include refid="com.fisher.mybatis.SqlMapper.pageSQL"></include>
+	</select>
+
+</mapper>

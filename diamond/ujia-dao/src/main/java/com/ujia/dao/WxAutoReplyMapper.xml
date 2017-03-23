@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ujia.dao.WxAutoReplyMapper" >
+  <resultMap id="BaseResultMap" type="com.ujia.model.WxAutoReply" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="user_input" property="userInput" jdbcType="VARCHAR" />
+    <result column="sys_reply" property="sysReply" jdbcType="VARCHAR" />
+    <result column="msg_type" property="msgType" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, user_input, sys_reply, msg_type, create_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from ujia_wx_auto_reply
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ujia_wx_auto_reply
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.ujia.model.WxAutoReply" >
+    insert into ujia_wx_auto_reply (id, user_input, sys_reply, 
+      msg_type, create_time)
+    values (#{id,jdbcType=VARCHAR}, #{userInput,jdbcType=VARCHAR}, #{sysReply,jdbcType=VARCHAR}, 
+      #{msgType,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ujia.model.WxAutoReply" >
+    insert into ujia_wx_auto_reply
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userInput != null" >
+        user_input,
+      </if>
+      <if test="sysReply != null" >
+        sys_reply,
+      </if>
+      <if test="msgType != null" >
+        msg_type,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="userInput != null" >
+        #{userInput,jdbcType=VARCHAR},
+      </if>
+      <if test="sysReply != null" >
+        #{sysReply,jdbcType=VARCHAR},
+      </if>
+      <if test="msgType != null" >
+        #{msgType,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ujia.model.WxAutoReply" >
+    update ujia_wx_auto_reply
+    <set >
+      <if test="userInput != null" >
+        user_input = #{userInput,jdbcType=VARCHAR},
+      </if>
+      <if test="sysReply != null" >
+        sys_reply = #{sysReply,jdbcType=VARCHAR},
+      </if>
+      <if test="msgType != null" >
+        msg_type = #{msgType,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ujia.model.WxAutoReply" >
+    update ujia_wx_auto_reply
+    set user_input = #{userInput,jdbcType=VARCHAR},
+      sys_reply = #{sysReply,jdbcType=VARCHAR},
+      msg_type = #{msgType,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+<!-- autoend   -->
+  
+  <!-- 获取自动回复列表 -->
+  
+  <resultMap type="com.ujia.vo.WxAutoReplyVo" id="AutoReplyVo" extends="BaseResultMap"></resultMap>
+  
+	<sql id="getAutoReplyCondition">
+		<where>
+		</where>
+	</sql>
+	<select id="getAutoReplyCount" resultType="int" parameterType="map">
+		select
+		count(*)
+		from ujia_wx_auto_reply
+		<include refid="getAutoReplyCondition"></include>
+	</select>
+	<select id="getAutoReplyList" resultMap="AutoReplyVo"
+		parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from ujia_wx_auto_reply
+		<include refid="getAutoReplyCondition"></include>
+		order by create_time desc
+		<include refid="com.fisher.mybatis.SqlMapper.pageSQL"></include>
+	</select>
+	<!-- 获取自动回复列表 end -->
+	
+	
+<!-- 	根据内容查询自动回复信息 -->
+<select id="getAutoReplyByContent" resultMap="AutoReplyVo" parameterType="java.lang.String" >
+    select 
+    *
+    from ujia_wx_auto_reply
+    where user_input = #{user_input,jdbcType=VARCHAR}
+  </select>
+
+
+
+<!-- 	根据内容查询自动回复信息end -->
+  
+</mapper>

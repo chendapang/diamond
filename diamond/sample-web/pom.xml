@@ -1,0 +1,51 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.fisher</groupId>
+		<artifactId>diamond</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>sample-web</artifactId>
+
+	<dependencies>
+		<!-- spring mvc start -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>4.3.6.RELEASE</version>
+		</dependency>
+
+
+		<!-- spring mvc end -->
+
+
+		<!-- redis start -->
+		<dependency>
+			<groupId>com.fisher</groupId>
+			<artifactId>redis</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<!-- redis session共享 注意必须放在redis后面 -->
+		<dependency>
+			<groupId>org.springframework.session</groupId>
+			<artifactId>spring-session-data-redis</artifactId>
+			<version>1.3.0.RELEASE</version>
+		</dependency>
+		<!-- redis end -->
+		
+		<!-- rocket mq start -->
+		<dependency>
+			<groupId>com.fisher</groupId>
+			<artifactId>rocketmq</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<!-- rocket mq end -->
+		<dependency>
+			<groupId>com.fisher</groupId>
+			<artifactId>sample-api</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+	<packaging>war</packaging>
+</project>

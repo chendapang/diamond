@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:oauth2="http://www.springframework.org/schema/security/oauth2"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+	http://www.springframework.org/schema/mvc 
+	http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+    http://www.springframework.org/schema/security 
+    http://www.springframework.org/schema/security/spring-security-3.2.xsd
+    http://www.springframework.org/schema/context 
+    http://www.springframework.org/schema/context/spring-context-4.2.xsd
+    http://www.springframework.org/schema/security/oauth2 
+    http://www.springframework.org/schema/security/spring-security-oauth2-1.0.xsd">
+
+	<!--<http pattern="/resource/**" create-session="never"
+		entry-point-ref="oauth2AuthenticationEntryPoint"
+		access-decision-manager-ref="oauth2AccessDecisionManager">
+		<anonymous enabled="false" />
+		 <csrf disabled="true" /> <access-denied-handler ref="myAccessDeniedHandler" 
+			/>
+		<intercept-url pattern="/resource/**" access="ROLE_USER" />
+
+		<custom-filter ref="picResourceServer" before="PRE_AUTH_FILTER" />
+		<access-denied-handler ref="oauthAccessDeniedHandler" />
+	</http>-->
+
+	<http pattern="/account/**" create-session="never"
+		entry-point-ref="oauth2AuthenticationEntryPoint"
+		access-decision-manager-ref="oauth2AccessDecisionManager">
+		<anonymous enabled="false" />
+		<!-- <csrf disabled="true" /> <access-denied-handler ref="myAccessDeniedHandler" 
+			/> -->
+		<intercept-url pattern="/account/password" access="ROLE_USER" />
+		<intercept-url pattern="/account/mobile" access="ROLE_USER" />
+
+		<custom-filter ref="picResourceServer" before="PRE_AUTH_FILTER" />
+		<access-denied-handler ref="oauthAccessDeniedHandler" />
+	</http>
+
+	<http pattern="/houseowners/**" create-session="never"
+		entry-point-ref="oauth2AuthenticationEntryPoint"
+		access-decision-manager-ref="oauth2AccessDecisionManager">
+		<anonymous enabled="false" />
+		<intercept-url pattern="/houseowners/**/noticecount" access="ROLE_USER"  method="DELETE"/>
+		<intercept-url pattern="/houseowners/**/house" access="ROLE_USER" method="GET"/>
+		<intercept-url pattern="/houseowners/*" access="ROLE_USER" method="GET"/>
+		<intercept-url pattern="/houseowners/**/noticecount" access="ROLE_USER" method="GET" />
+		<intercept-url pattern="/houseowners/**/noticelist" access="ROLE_USER" method="GET"/>
+		<intercept-url pattern="/houseowners/**/promotions" access="ROLE_USER" method="POST"/>
+		<intercept-url pattern="/houseowners/**/projects" access="ROLE_USER" method="GET"/>
+		<intercept-url pattern="/houseowners/**/promotions" access="ROLE_USER" method="GET"/>
+		<intercept-url pattern="/houseowners/*" access="ROLE_USER" method="PUT"/>
+		
+		
+
+		<custom-filter ref="picResourceServer" before="PRE_AUTH_FILTER" />
+		<access-denied-handler ref="oauthAccessDeniedHandler" />
+	</http>
+
+	<http pattern="/application/**" create-session="never"
+		entry-point-ref="oauth2AuthenticationEntryPoint"
+		access-decision-manager-ref="oauth2AccessDecisionManager">
+		<anonymous enabled="false" />
+		<!-- <intercept-url pattern="/application/sms/verification"
+			access="ROLE_USER" />-->
+
+		<custom-filter ref="picResourceServer" before="PRE_AUTH_FILTER" />
+		<access-denied-handler ref="oauthAccessDeniedHandler" />
+	</http>
+
+
+
+	<http pattern="/projects/**" create-session="never"
+		entry-point-ref="oauth2AuthenticationEntryPoint"
+		access-decision-manager-ref="oauth2AccessDecisionManager">
+		<anonymous enabled="false" />
+		<intercept-url pattern="/projects/**" access="ROLE_USER" />
+
+		<custom-filter ref="picResourceServer" before="PRE_AUTH_FILTER" />
+		<access-denied-handler ref="oauthAccessDeniedHandler" />
+	</http>
+	
+	<http pattern="/news/**" create-session="never"
+		entry-point-ref="oauth2AuthenticationEntryPoint"
+		access-decision-manager-ref="oauth2AccessDecisionManager">
+		<anonymous enabled="false" />
+		
+		<intercept-url pattern="/news/**" access="ROLE_USER" />
+
+		<custom-filter ref="picResourceServer" before="PRE_AUTH_FILTER" />
+		<access-denied-handler ref="oauthAccessDeniedHandler" />
+	</http>
+
+	<!-- <http pattern="/diaries/**" create-session="never" entry-point-ref="oauth2AuthenticationEntryPoint" 
+		access-decision-manager-ref="oauth2AccessDecisionManager"> <anonymous enabled="false" 
+		/> <intercept-url pattern="/diaries/**" access="ROLE_USER" /> <custom-filter ref="picResourceServer" before="PRE_AUTH_FILTER" /><access-denied-handler 
+		ref="oauthAccessDeniedHandler" /> </http> -->
+
+	<!-- <http pattern="/cases/**" create-session="never" entry-point-ref="oauth2AuthenticationEntryPoint" 
+		access-decision-manager-ref="oauth2AccessDecisionManager"> <anonymous enabled="false" 
+		/> <intercept-url pattern="/cases/**" access="ROLE_USER" /> <custom-filter ref="picResourceServer" before="PRE_AUTH_FILTER" /><access-denied-handler 
+		ref="oauthAccessDeniedHandler" /> </http> -->
+
+	<!-- <http pattern="/articles/**" create-session="never" entry-point-ref="oauth2AuthenticationEntryPoint" 
+		access-decision-manager-ref="oauth2AccessDecisionManager"> <anonymous enabled="false" 
+		/> <intercept-url pattern="/articles/**" access="ROLE_USER" /> <custom-filter ref="picResourceServer" before="PRE_AUTH_FILTER" /><access-denied-handler 
+		ref="oauthAccessDeniedHandler" /> </http> -->
+
+
+
+	<!-- <http pattern="/citys/**" create-session="never" entry-point-ref="oauth2AuthenticationEntryPoint" 
+		access-decision-manager-ref="oauth2AccessDecisionManager"> <anonymous enabled="false" 
+		/> <intercept-url pattern="/citys/**" access="ROLE_USER" /> <custom-filter ref="picResourceServer" before="PRE_AUTH_FILTER" /><access-denied-handler 
+		ref="oauthAccessDeniedHandler" /> </http> -->
+
+
+
+
+
+	<!-- <http pattern="/notices/**" create-session="never" entry-point-ref="oauth2AuthenticationEntryPoint" 
+		access-decision-manager-ref="oauth2AccessDecisionManager"> <anonymous enabled="false" 
+		/> <intercept-url pattern="/notices/**" access="ROLE_USER" /><custom-filter ref="picResourceServer" before="PRE_AUTH_FILTER" /> <access-denied-handler 
+		ref="oauthAccessDeniedHandler" /> </http> -->
+
+
+
+	<!-- <http pattern="/workorders/**" create-session="never" entry-point-ref="oauth2AuthenticationEntryPoint" 
+		access-decision-manager-ref="oauth2AccessDecisionManager"> <anonymous enabled="false" 
+		/> <intercept-url pattern="/workorders/**" access="ROLE_USER" /> <custom-filter ref="picResourceServer" before="PRE_AUTH_FILTER" /><access-denied-handler 
+		ref="oauthAccessDeniedHandler" /> </http> -->
+
+
+</beans:beans>

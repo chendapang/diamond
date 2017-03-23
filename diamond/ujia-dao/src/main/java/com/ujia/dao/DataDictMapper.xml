@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ujia.dao.DataDictMapper">
+
+	<resultMap id="BaseResultMap" type="com.ujia.model.DataDict">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="PARENT_DICT_ID" property="parentDictId"
+			jdbcType="VARCHAR" />
+		<result column="DICT_VALUE" property="dictValue" jdbcType="VARCHAR" />
+		<result column="DICT_KEY" property="dictKey" jdbcType="VARCHAR" />
+		<result column="DICT_COMMENT" property="dictComment" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		ID, PARENT_DICT_ID, DICT_VALUE, DICT_KEY, DICT_COMMENT
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from sys_data_dict
+		where ID = #{id,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from sys_data_dict
+		where ID = #{id,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="com.ujia.model.DataDict">
+		insert into sys_data_dict (ID, PARENT_DICT_ID, DICT_VALUE,
+		DICT_KEY, DICT_COMMENT)
+		values (#{id,jdbcType=VARCHAR}, #{parentDictId,jdbcType=VARCHAR},
+		#{dictValue,jdbcType=VARCHAR},
+		#{dictKey,jdbcType=VARCHAR}, #{dictComment,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective" parameterType="com.ujia.model.DataDict">
+		insert into sys_data_dict
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				ID,
+			</if>
+			<if test="parentDictId != null">
+				PARENT_DICT_ID,
+			</if>
+			<if test="dictValue != null">
+				DICT_VALUE,
+			</if>
+			<if test="dictKey != null">
+				DICT_KEY,
+			</if>
+			<if test="dictComment != null">
+				DICT_COMMENT,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="parentDictId != null">
+				#{parentDictId,jdbcType=VARCHAR},
+			</if>
+			<if test="dictValue != null">
+				#{dictValue,jdbcType=VARCHAR},
+			</if>
+			<if test="dictKey != null">
+				#{dictKey,jdbcType=VARCHAR},
+			</if>
+			<if test="dictComment != null">
+				#{dictComment,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.ujia.model.DataDict">
+		update sys_data_dict
+		<set>
+			<if test="parentDictId != null">
+				PARENT_DICT_ID = #{parentDictId,jdbcType=VARCHAR},
+			</if>
+			<if test="dictValue != null">
+				DICT_VALUE = #{dictValue,jdbcType=VARCHAR},
+			</if>
+			<if test="dictKey != null">
+				DICT_KEY = #{dictKey,jdbcType=VARCHAR},
+			</if>
+			<if test="dictComment != null">
+				DICT_COMMENT = #{dictComment,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.ujia.model.DataDict">
+		update sys_data_dict
+		set PARENT_DICT_ID = #{parentDictId,jdbcType=VARCHAR},
+		DICT_VALUE = #{dictValue,jdbcType=VARCHAR},
+		DICT_KEY = #{dictKey,jdbcType=VARCHAR},
+		DICT_COMMENT = #{dictComment,jdbcType=VARCHAR}
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+
+	<!-- autoend -->
+
+	<resultMap id="dataDictMap" type="com.ujia.vo.DataDictVo">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="DICT_KEY" property="dictKey" jdbcType="VARCHAR" />
+		<result column="DICT_VALUE" property="dictValue" jdbcType="VARCHAR" />
+		<result column="DICT_COMMENT" property="dictComment" jdbcType="VARCHAR" />
+		<result column="DICT_COMMENT" property="dictComment" jdbcType="VARCHAR" />
+
+	</resultMap>
+
+	<select id="getDataDict" resultMap="dataDictMap" parameterType="Map">
+		select
+		id ,
+		dict_key,
+		dict_value,
+		dict_comment
+		from sys_data_dict T1
+		WHERE
+		T1.DICT_KEY = #{dictKey}
+	</select>
+
+	<select id="selectByKey" resultMap="BaseResultMap" parameterType="String">
+		select
+		*
+		from
+		sys_data_dict T1
+		WHERE
+		T1.DICT_KEY = #{dictKey}
+	</select>
+
+
+</mapper>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:motan="http://api.weibo.com/schema/motan"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+   http://api.weibo.com/schema/motan http://api.weibo.com/schema/motan.xsd">
+
+
+<!--    <motan:registry regProtocol="zookeeper" name="my_zookeeper" address="120.76.232.170:2181"/> -->
+    <motan:registry regProtocol="zookeeper" name="my_zookeeper" address="localhost:2181"/>
+    
+    
+    <motan:protocol id="fisherMotan" default="true" name="motan"
+	                    maxServerConnection="80000" maxContentLength="1048576"
+	                    maxWorkerThread="800" minWorkerThread="20"/>
+	                    
+	  <motan:basicService export="fisherMotan:9001"
+                        group="default_rpc" accessLog="false" shareChannel="true" module="default_rpc"
+                        application="sample" registry="my_zookeeper" id="serviceBasicConfig"/>
+
+
+ 	 <motan:service export="fisherMotan:9001" basicService="serviceBasicConfig" ref="motanSampleService" interface="com.fisher.api.MotanSampleService"  />
+ 	 
+ 	 <!-- php motan配置 start -->
+ 	  <motan:service export="fisherMotan:9001" basicService="serviceBasicConfig" ref="motanSampleService"  interface="com.fisher.api.YarService" />
+ 	 <!-- php motan配置 end -->
+ 
+	<!-- 不使用zookeeper start 
+		不使用zookeeper end -->
+<!-- 	<motan:referer id="mt_helloService" interface="com.fisher.wb.service.HelloService"  -->
+<!-- 		directUrl="localhost:8002"/>  -->
+
+
+	<!-- 使用zookeeper start 
+	<motan:registry regProtocol="zookeeper" name="my_zookeeper"
+		address="127.0.0.1:2181" />
+
+	<motan:referer id="helloService" interface="com.fisher.wb.service.HelloService"
+		registry="my_zookeeper" requestTimeout="1000000" connectTimeout="1000000"/>
+
+
+         使用zookeeper end -->
+         
+</beans>

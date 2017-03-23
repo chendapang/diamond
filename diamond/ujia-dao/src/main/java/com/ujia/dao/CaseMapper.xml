@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ujia.dao.CaseMapper">
+
+	<sql id="Base_Column_List">
+		id, building_name, tag, house_style, house_area, cost_amount,
+		designer_name, designer_avatar,
+		created_at, caption, page_url, cover_url, updated_at, type, author, recommend,
+		case_abstract,context,recommend_str,type_str,top_cover
+	</sql>
+
+	 <resultMap id="BaseResultMap" type="com.ujia.vo.CaseVo" >
+	    <id column="id" property="id" jdbcType="VARCHAR" />
+	    <result column="building_name" property="buildingName" jdbcType="VARCHAR" />
+	    <result column="tag" property="tag" jdbcType="VARCHAR" />
+	    <result column="house_style" property="houseStyle" jdbcType="VARCHAR" />
+	    <result column="house_area" property="houseArea" jdbcType="VARCHAR" />
+	    <result column="cost_amount" property="costAmount" jdbcType="VARCHAR" />
+	    <result column="designer_name" property="designerName" jdbcType="VARCHAR" />
+	    <result column="designer_avatar" property="designerAvatar" jdbcType="VARCHAR" />
+	    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+	    <result column="caption" property="caption" jdbcType="VARCHAR" />
+	    <result column="page_url" property="pageUrl" jdbcType="VARCHAR" />
+	    <result column="cover_url" property="coverUrl" jdbcType="VARCHAR" />
+	    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+	    <result column="type" property="type" jdbcType="INTEGER" />
+	    <result column="author" property="author" jdbcType="VARCHAR" />
+	    <result column="recommend" property="recommend" jdbcType="INTEGER" />
+	    <result column="case_abstract" property="caseAbstract" jdbcType="VARCHAR" />
+	    <result column="context" property="context" jdbcType="VARCHAR" />
+	    <result column="recommend_str" property="recommendStr" jdbcType="VARCHAR" />
+	    <result column="type_str" property="typeStr" jdbcType="VARCHAR" />
+	    <result column="top_cover" property="topCover" jdbcType="VARCHAR" />
+	  </resultMap>
+
+	<resultMap id="caseMap" type="com.ujia.vo.CaseVo">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="BUILDING_NAME" property="buildingName"
+			jdbcType="VARCHAR" />
+		<result column="TAG" property="tag" jdbcType="VARCHAR" />
+		<result column="HOUSE_STYLE" property="houseStyle" jdbcType="VARCHAR" />
+		<result column="HOUSE_AREA" property="houseArea" jdbcType="VARCHAR" />
+		<result column="COST_AMOUNT" property="costAmount" jdbcType="DECIMAL" />
+		<result column="DESIGNER_NAME" property="designerName"
+			jdbcType="VARCHAR" />
+		<result column="DESIGNER_AVATAR" property="designerAvatar"
+			jdbcType="VARCHAR" />
+		<result column="CREATED_AT" property="createdAt" jdbcType="TIMESTAMP" />
+		<result column="CAPTION" property="caption" jdbcType="VARCHAR" />
+		<result column="PAGE_URL" property="pageUrl" jdbcType="VARCHAR" />
+		<result column="COVER_URL" property="coverUrl" jdbcType="VARCHAR" />
+		<result column="STYLE" property="style" jdbcType="INTEGER" />
+		<result column="UPDATED_AT" property="updatedAt" jdbcType="TIMESTAMP" />
+		<result column="CONTEXT" property="context" jdbcType="VARCHAR" />
+		<result column="TYPE" property="type" jdbcType="INTEGER" />
+		<result column="AUTHOR" property="author" jdbcType="VARCHAR" />
+		<result column="RECOMMEND" property="recommend" jdbcType="INTEGER" />
+		<result column="CASE_ABSTRACT" property="caseAbstract"
+			jdbcType="VARCHAR" />
+		<result column="recommend_str" property="recommendStr" jdbcType="VARCHAR" />
+	    <result column="type_str" property="typeStr" jdbcType="VARCHAR" />
+		<result column="top_cover" property="topCover" jdbcType="VARCHAR" />
+
+	</resultMap>
+
+	<select id="countCase" resultType="int" parameterType="Map">
+		select
+		count(T1.ID)
+		from ujia_case T1
+		<where>
+
+
+			<if test="searchParam != null and '' !=searchParam">
+
+				AND INSTR(T1.tag,#{searchParam})>0 OR
+				INSTR(T1.caption,#{searchParam})>0
+			</if>
+			<if test="type != null">
+
+				AND T1.type=#{type}
+			</if>
+
+			<if test="recommend != null">
+				AND T1.recommend=#{recommend}
+			</if>
+
+		</where>
+	</select>
+
+	<select id="getCases" resultMap="caseMap" parameterType="Map">
+		select
+		T1.ID,
+		T1.building_name,
+		T1.house_style,
+		T1.house_area,
+		T1.cost_amount,
+		T1.designer_avatar,
+		T1.designer_name,
+		T1.PAGE_URL,
+		T1.COVER_URL,
+		T1.tag,
+		T1.CASE_ABSTRACT,
+		T1.TYPE,
+		T1.top_cover
+		from ujia_case
+		T1
+		<where>
+
+			<if test="searchParam != null and '' !=searchParam">
+
+				AND INSTR(T1.tag,#{searchParam})>0 OR
+				INSTR(T1.caption,#{searchParam})>0
+			</if>
+			<if test="type != null">
+
+				AND T1.type=#{type}
+			</if>
+		</where>
+		order by T1.CREATED_AT desc
+		<include refid="com.fisher.mybatis.SqlMapper.pageSQL"></include>
+	</select>
+
+	<select id="getCase" resultMap="caseMap" parameterType="Map">
+		select
+		T1.building_name,
+		T1.house_style,
+		T1.house_area,
+		T1.cost_amount,
+		T1.designer_avatar,
+		T1.designer_name,
+		T1.COVER_URL,
+		T1.AUTHOR,
+		T1.context,
+		T1.tag,
+		T1.top_cover
+		from ujia_case
+		T1
+		<where>
+
+			T1.id=#{id}
+		</where>
+
+	</select>
+
+	<select id="getCasesLimit" resultMap="caseMap" parameterType="Map">
+		select
+		T1.ID,
+		T1.building_name,
+		T1.house_style,
+		T1.house_area,
+		T1.cost_amount,
+		T1.designer_avatar,
+		T1.designer_name,
+		T1.PAGE_URL,
+		T1.COVER_URL,
+		T1.tag,
+		T1.CASE_ABSTRACT,
+		T1.TYPE,
+		T1.top_cover
+		from ujia_case
+		T1
+
+		<where>
+			<if test="type != null and '' != type">
+				AND T1.type=#{type}
+			</if>
+			<if test="recommend != null">
+				AND T1.recommend=#{recommend}
+			</if>
+
+		</where>
+
+		<if test="limit != null">
+			limit #{limit}
+		</if>
+
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from
+		ujia_case
+		where id = #{id,jdbcType=VARCHAR}
+	</delete>
+
+	<update id="updateByPrimaryKeySelective" parameterType="com.ujia.model.Case">
+		update ujia_case
+		<set>
+			<if test="houseStyle != null">
+				house_style=#{houseStyle,jdbcType=VARCHAR},
+			</if>
+			<if test="buildingName != null">
+				building_name = #{buildingName,jdbcType=VARCHAR},
+			</if>
+			<if test="tag != null">
+				tag = #{tag,jdbcType=VARCHAR},
+			</if>
+			<if test="houseArea != null">
+				house_area = #{houseArea,jdbcType=VARCHAR},
+			</if>
+			<if test="costAmount != null">
+				cost_amount = #{costAmount,jdbcType=TIMESTAMP},
+			</if>
+			<if test="designerName != null">
+				designer_name = #{designerName,jdbcType=TIMESTAMP},
+			</if>
+			<if test="designerAvatar != null">
+				designer_avatar = #{designerAvatar,jdbcType=BIT},
+			</if>
+			<if test="caption != null">
+				caption = #{caption,jdbcType=VARCHAR},
+			</if>
+			<if test="coverUrl != null">
+				cover_url = #{coverUrl,jdbcType=VARCHAR},
+			</if>
+			
+				updated_at = now(),
+			
+			<if test="context != null">
+				context = #{context,jdbcType=VARCHAR},
+			</if>
+			<if test="type != null">
+				type = #{type,jdbcType=VARCHAR},
+			</if>
+			<if test="author != null">
+				author = #{author,jdbcType=VARCHAR},
+			</if>
+			<if test="recommend != null">
+				recommend = #{recommend,jdbcType=VARCHAR},
+			</if>
+			<if test="caseAbstract != null">
+				case_abstract = #{caseAbstract,jdbcType=VARCHAR},
+			</if>
+			<if test="typeStr != null">
+				type_str = #{typeStr,jdbcType=VARCHAR},
+			</if>
+			<if test="recommendStr != null">
+				recommend_str = #{recommendStr,jdbcType=VARCHAR},
+			</if>
+			<if test="topCover != null">
+				top_cover = #{topCover,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+
+	<insert id="insertSelective" parameterType="com.ujia.model.Case">
+		insert into ujia_case
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="buildingName != null">
+				building_name,
+			</if>
+			<if test="tag != null">
+				tag,
+			</if>
+			<if test="houseStyle != null">
+				house_style,
+			</if>
+			<if test="houseArea != null">
+				house_area,
+			</if>
+			<if test="costAmount != null">
+				cost_amount,
+			</if>
+			<if test="designerName != null">
+				designer_name,
+			</if>
+			<if test="designerAvatar != null">
+				designer_avatar,
+			</if>
+			
+				created_at,
+			
+			<if test="caption != null">
+				caption,
+			</if>
+			<if test="pageUrl != null">
+				page_url,
+			</if>
+			<if test="coverUrl != null">
+				cover_url,
+			</if>
+			<if test="updatedAt != null">
+				updated_at,
+			</if>
+			<if test="type != null">
+				type,
+			</if>
+			<if test="author != null">
+				author,
+			</if>
+			<if test="recommend != null">
+				recommend,
+			</if>
+			<if test="caseAbstract != null">
+				case_abstract,
+			</if>
+			<if test="context != null">
+				context,
+			</if>
+			<if test="recommendStr != null">
+				recommend_str,
+			</if>
+			<if test="typeStr != null">
+				type_str,
+			</if>
+			<if test="topCover != null">
+				top_cover,
+			</if>
+			
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="buildingName != null">
+				#{buildingName,jdbcType=VARCHAR},
+			</if>
+			<if test="tag != null">
+				#{tag,jdbcType=VARCHAR},
+			</if>
+			<if test="houseStyle != null">
+				#{houseStyle,jdbcType=VARCHAR},
+			</if>
+			<if test="houseArea != null">
+				#{houseArea,jdbcType=VARCHAR},
+			</if>
+			<if test="costAmount != null">
+				#{costAmount,jdbcType=VARCHAR},
+			</if>
+			<if test="designerName != null">
+				#{designerName,jdbcType=VARCHAR},
+			</if>
+			<if test="designerAvatar != null">
+				#{designerAvatar,jdbcType=VARCHAR},
+			</if>
+			
+				now(),
+			
+			<if test="caption != null">
+				#{caption,jdbcType=VARCHAR},
+			</if>
+			<if test="pageUrl != null">
+				#{pageUrl,jdbcType=VARCHAR},
+			</if>
+			<if test="coverUrl != null">
+				#{coverUrl,jdbcType=VARCHAR},
+			</if>
+			<if test="updatedAt != null">
+				#{updatedAt,jdbcType=TIMESTAMP},
+			</if>
+			<if test="type != null">
+				#{type,jdbcType=INTEGER},
+			</if>
+			<if test="author != null">
+				#{author,jdbcType=VARCHAR},
+			</if>
+			<if test="recommend != null">
+				#{recommend,jdbcType=INTEGER},
+			</if>
+			<if test="caseAbstract != null">
+				#{caseAbstract,jdbcType=VARCHAR},
+			</if>
+			<if test="context != null">
+				#{context,jdbcType=LONGVARCHAR},
+			</if>
+			<if test="recommendStr != null">
+				#{recommendStr,jdbcType=VARCHAR},
+			</if>
+			<if test="typeStr != null">
+				#{typeStr,jdbcType=VARCHAR},
+			</if>
+			<if test="topCover != null">
+				#{topCover,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+
+	<select id="getCaseList" resultMap="BaseResultMap"
+		parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from ujia_case
+		ORDER BY created_at desc
+		<include refid="com.fisher.mybatis.SqlMapper.pageSQL"></include>
+	</select>
+	
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from ujia_case
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+</mapper>

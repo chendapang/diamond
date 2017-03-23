@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:oauth2="http://www.springframework.org/schema/security/oauth2"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+	http://www.springframework.org/schema/mvc 
+	http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+    http://www.springframework.org/schema/security 
+    http://www.springframework.org/schema/security/spring-security-3.2.xsd
+    http://www.springframework.org/schema/context 
+    http://www.springframework.org/schema/context/spring-context-4.2.xsd
+    http://www.springframework.org/schema/security/oauth2 
+    http://www.springframework.org/schema/security/spring-security-oauth2-1.0.xsd">
+
+	<!--<http pattern="/system/jsp/login.jsp" security="none" /> <http pattern="/j_spring_security_check" 
+		security="none" /> -->
+
+	<beans:bean id="myAccessDeniedHandler"
+		class="com.ujia.aus.security.handler.MyAccessDeniedHandler">
+		<beans:property name="errorPage" value="/error/accessDenied"></beans:property>
+	</beans:bean>
+
+	<oauth2:resource-server id="picResourceServer"
+		resource-id="pic-resource" token-services-ref="tokenServices" />
+
+	<http pattern="/oauth/token" create-session="stateless"
+		authentication-manager-ref="clientAuthenticationManager"
+		entry-point-ref="oauth2AuthenticationEntryPoint">
+		<!-- <csrf disabled="true" /> -->
+		<intercept-url pattern="/oauth/token" access="IS_AUTHENTICATED_FULLY" />
+		<anonymous enabled="false" />
+		<http-basic entry-point-ref="oauth2AuthenticationEntryPoint" />
+		<custom-filter ref="clientCredentialsTokenEndpointFilter"
+			before="BASIC_AUTH_FILTER" />
+		<access-denied-handler ref="oauthAccessDeniedHandler" />
+	</http>
+
+	<!-- <http access-denied-page="/system/jsp/login.jsp?error=true" authentication-manager-ref="authenticationManager"> -->
+	<http authentication-manager-ref="authenticationManager">
+		<!-- <csrf disabled="true" /> -->
+		<intercept-url pattern="/oauth/**" access="ROLE_USER" />
+		<!-- <intercept-url pattern="/**" access="hasRole('IS_AUTHENTICATED_ANONYMOUSLY')" 
+			/> -->
+		<intercept-url pattern="/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+		<!-- <form-login login-page="/system/jsp/login.jsp" authentication-failure-url="/system/jsp/login.jsp?error=true" 
+			default-target-url="/system/jsp/index.jsp" /> -->
+		<form-login login-page="/error/loginError"
+			authentication-failure-url="/error/authError" />
+		<anonymous />
+	</http>
+
+	<authentication-manager alias="authenticationManager">
+		<!--<authentication-provider> <user-service id="userService"> <user name="13540439712" 
+			password="202cb962ac59075b964b07152d234b70" authorities="ROLE_USER" /> </user-service> 
+			</authentication-provider> -->
+		<authentication-provider user-service-ref="userService">
+			<!-- <password-encoder ref="passwordEncoder" /> -->
+		</authentication-provider>
+	</authentication-manager>
+
+	<!-- <beans:bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" 
+		/> -->
+
+	<beans:bean id="userService"
+		class="com.ujia.aus.security.core.MyUserDetailsService" />
+
+
+	<beans:bean id="clientCredentialsTokenEndpointFilter"
+		class="org.springframework.security.oauth2.provider.client.ClientCredentialsTokenEndpointFilter">
+		<beans:property name="authenticationManager" ref="clientAuthenticationManager" />
+	</beans:bean>
+
+	<beans:bean id="oauth2AuthenticationEntryPoint"
+		class="com.ujia.aus.oauth.error.MyOAuth2AuthenticationEntryPoint" />
+
+	<beans:bean id="oauthAccessDeniedHandler"
+		class="com.ujia.aus.oauth.error.MyOAuth2AccessDeniedHandler" />
+
+	<authentication-manager id="clientAuthenticationManager">
+		<authentication-provider user-service-ref="oauth2ClientDetailsUserService" />
+	</authentication-manager>
+
+	<beans:bean id="oauth2ClientDetailsUserService"
+		class="org.springframework.security.oauth2.provider.client.ClientDetailsUserDetailsService">
+		<beans:constructor-arg ref="clientDetailsService" />
+	</beans:bean>
+
+	<oauth2:client-details-service id="clientDetailsService">
+		<oauth2:client client-id="dogfish"
+			authorized-grant-types="password,authorization_code,refresh_token,implicit"
+			secret="f5afe105e09a373628e364c21653a982" scope="read,write,trust"
+			authorities="ROLE_CLIENT, ROLE_TRUSTED_CLIENT" resource-ids="pic-resource" />
+	</oauth2:client-details-service>
+	<!-- secret值 mju76yhN -->
+
+	<beans:bean id="tokenServices"
+		class="org.springframework.security.oauth2.provider.token.DefaultTokenServices">
+		<beans:property name="tokenStore" ref="tokenStore" />
+		<beans:property name="supportRefreshToken" value="true" />
+		<beans:property name="clientDetailsService" ref="clientDetailsService" />
+		<!-- 45天 -->
+		<beans:property name="refreshTokenValiditySeconds" value="3888000"></beans:property>
+		<!-- 30天 -->
+		<beans:property name="accessTokenValiditySeconds" value="2592000"></beans:property>
+	</beans:bean>
+	<beans:bean id="tokenStore"
+		class="org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore">
+	</beans:bean>
+
+	<!-- <oauth2:authorization-server client-details-service-ref="clientDetailsService" 
+		token-services-ref="tokenServices" user-approval-handler-ref="oauthUserApprovalHandler" 
+		user-approval-page="jsp/oauth_approval" error-page="error/oauthError"> -->
+	<oauth2:authorization-server
+		client-details-service-ref="clientDetailsService" token-services-ref="tokenServices"
+		user-approval-handler-ref="oauthUserApprovalHandler" error-page="error/oauthError">
+		<oauth2:authorization-code />
+		<oauth2:implicit />
+		<oauth2:refresh-token />
+		<oauth2:client-credentials />
+		<oauth2:password />
+	</oauth2:authorization-server>
+
+	<beans:bean id="oauthUserApprovalHandler"
+		class="org.springframework.security.oauth2.provider.approval.DefaultUserApprovalHandler" />
+
+	<beans:bean id="oauth2AccessDecisionManager"
+		class="org.springframework.security.access.vote.UnanimousBased">
+		<beans:constructor-arg>
+			<beans:list>
+				<beans:bean
+					class="org.springframework.security.oauth2.provider.vote.ScopeVoter" />
+				<beans:bean class="org.springframework.security.access.vote.RoleVoter" />
+				<beans:bean
+					class="org.springframework.security.access.vote.AuthenticatedVoter" />
+			</beans:list>
+		</beans:constructor-arg>
+	</beans:bean>
+
+</beans:beans>
